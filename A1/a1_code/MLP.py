@@ -27,6 +27,7 @@ class MLP:
         Y_hat = h_z @ self.w2 + self.b2
         # pass in the activation function
         Y_pred = self.sigmoid(Y_hat)      
+        # one-hot encode Y_pred
         Y_pred = (Y_pred == Y_pred.max(axis=1)[:,None]).astype(int)
         return Y_pred
     
