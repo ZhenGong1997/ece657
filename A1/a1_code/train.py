@@ -1,4 +1,5 @@
 from MLP import MLP
+from MLP import Layer
 import numpy as np
 import pandas as pd
 from acc_calc import accuracy 
@@ -14,9 +15,17 @@ if __name__ == '__main__':
     y_valid = y_train[:len_valid]
     y_train = y_train[len_valid:]
 
-    mlp = MLP(input_size=x_train.shape[1], hidden_size=64, output_size = y_train.shape[1])
+    # initialize a general model, 784->64->4
+    layers = []
+    layer1 = Layer(x_train.shape[1], 64)
+    layer2 = Layer(64, y_train.shape[1])
+    layers.append(layer1)
+    layers.append(layer2)
+    mlp = MLP(layers)
     mlp.fit(x_train, y_train, 10, 0.01)
+
+    # validation
     prediction = mlp.predict(x_valid)
-    test_acc = accuracy(prediction, y_valid)
-    print("test acc = ", test_acc)
+    test_acc = accuracy(y_valid, prediction)
+    print("validation acc = ", test_acc*100)
     mlp.save_model("a1")
