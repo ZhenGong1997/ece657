@@ -1,6 +1,6 @@
-from zipfile import ZipInfo
 import numpy as np
 import pickle
+
 class Layer:
     def __init__(self, input_size, output_size):
         self.w = np.random.randn(input_size, output_size)
@@ -13,7 +13,6 @@ class Layer:
         z = x @ self.w + self.b
         y_pred = self.sigmoid(z)
         return y_pred
-    
     
 class MLP:
     def __init__(self, layers=[]):
@@ -39,8 +38,7 @@ class MLP:
         # last layer
         n = len(h_z)-1
 
-        # (h_z[n] - y) size (1,4); h_z[n] size (1,4); grad_b (1,4) ; delta (1,4)
-        # follow backpropagation equation, last layer is a special case
+        # follow backpropagation equation, last layer is a special case since it contains δloss/δy_pred term
         delta = ((h_z[n] - y) * self.sigmoid_derivative(h_z[n]))
         grad_b = delta
         grad_w = h_z[n-1].T @ delta
@@ -73,6 +71,7 @@ class MLP:
             Y_pred.append(y_pred)
        
         Y_pred = np.array(Y_pred).reshape(-1,4)
+        # hot encoding Y_pred
         Y_pred = (Y_pred == Y_pred.max(axis=1)[:,None]).astype(int)
         return Y_pred
 
@@ -101,8 +100,10 @@ class MLP:
                 # calculate training loss
                 loss = self.loss_fn(y_pred, y)
                 losses.append(loss)
-                # hot encode y_pred, calculate training accuracy
+
+                # hot encode y_pred
                 he_y_pred = (y_pred == y_pred.max(axis=1)[:,None]).astype(int)
+                # calculate training accuracy
                 single_acc = self.get_accuracy(y, he_y_pred)
                 acc_history.append(single_acc)
 

@@ -22,6 +22,8 @@ if __name__ == '__main__':
     layers.append(layer1)
     layers.append(layer2)
     mlp = MLP(layers)
+
+    # train
     mlp.fit(x_train, y_train, 10, 0.01)
 
     # validation
