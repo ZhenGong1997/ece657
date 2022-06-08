@@ -1,5 +1,5 @@
 from MLP import MLP
-from MLP import Layer
+from MLP import Neuron
 import numpy as np
 import pandas as pd
 from acc_calc import accuracy 
@@ -16,12 +16,12 @@ if __name__ == '__main__':
     y_train = y_train[len_valid:]
 
     # initialize a general model, 784->64->4
-    layers = []
-    layer1 = Layer(x_train.shape[1], 64)
-    layer2 = Layer(64, y_train.shape[1])
-    layers.append(layer1)
-    layers.append(layer2)
-    mlp = MLP(layers)
+    neurons = []
+    neuron1 = Neuron(x_train.shape[1], 64)
+    neuron2 = Neuron(64, y_train.shape[1])
+    neurons.append(neuron1)
+    neurons.append(neuron2)
+    mlp = MLP(neurons)
 
     # train
     mlp.fit(x_train, y_train, 10, 0.01)

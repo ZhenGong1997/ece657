@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 
-class Layer:
+class Neuron:
     def __init__(self, input_size, output_size):
         self.w = np.random.randn(input_size, output_size)
         self.b = np.random.randn(1, output_size)
@@ -15,8 +15,8 @@ class Layer:
         return y_pred
     
 class MLP:
-    def __init__(self, layers=[]):
-        self.layers = layers
+    def __init__(self, neurons=[]):
+        self.neurons = neurons
         
     def sigmoid_derivative(self, y): 
         return y * (1.0 - y)    
@@ -26,8 +26,8 @@ class MLP:
         h_z = [x.reshape(1,-1)]
         out = x.reshape(1,-1)
     
-        for layer in self.layers:
-            out = layer.forward(out)
+        for neuron in self.neurons:
+            out = neuron.forward(out)
             h_z.append(out)
         # note h_z[0] = x, h_z[-1] = y_pred
         return out, h_z
@@ -35,29 +35,29 @@ class MLP:
     def backpropagate(self, h_z, y, lr): 
         grad_w_list = []
         grad_b_list = []   
-        # last layer
+        # last neuron
         n = len(h_z)-1
 
-        # follow backpropagation equation, last layer is a special case since it contains δloss/δy_pred term
-        delta = ((h_z[n] - y) * self.sigmoid_derivative(h_z[n]))
-        grad_b = delta
-        grad_w = h_z[n-1].T @ delta
+        # follow backpropagation equation, last neuron is a special case since it contains δloss/δy_pred term
+        repete_derivative = ((h_z[n] - y) * self.sigmoid_derivative(h_z[n]))
+        grad_b = repete_derivative
+        grad_w = h_z[n-1].T @ repete_derivative
         grad_w_list.insert(0, grad_w)
         grad_b_list.insert(0, grad_b)
         
-        # intermediate and first layer
-        # follow backpropagation equation, these layers are normal cases
-        for i in range(len(self.layers)-2,-1,-1):
-            delta = delta @ self.layers[i+1].w.T * self.sigmoid_derivative(h_z[i+1])
-            grad_b = delta
-            grad_w = h_z[i].T @ delta
+        # intermediate and first neuron
+        # follow backpropagation equation, these neurons are normal cases
+        for i in range(len(self.neurons)-2,-1,-1):
+            repete_derivative = repete_derivative @ self.neurons[i+1].w.T * self.sigmoid_derivative(h_z[i+1])
+            grad_b = repete_derivative
+            grad_w = h_z[i].T @ repete_derivative
             grad_w_list.insert(0, grad_w)
             grad_b_list.insert(0, grad_b)
         
         # update weights and bias
         for j in range(len(grad_w_list)):
-            self.layers[j].w -= lr*grad_w_list[j]
-            self.layers[j].b -= lr*grad_b_list[j]
+            self.neurons[j].w -= lr*grad_w_list[j]
+            self.neurons[j].b -= lr*grad_b_list[j]
                  
     def loss_fn(self, y_pred, y):
         loss = np.sum((y - y_pred)**2)/len(y)
@@ -116,11 +116,11 @@ class MLP:
 
     def save_model(self, path):
         model_path = path + 'pretrained_model.pkl'
-        model = {'layers': self.layers}
+        model = {'neurons': self.neurons}
         with open(model_path, "wb") as fp:
             pickle.dump(model, fp)
 
     def read_model(self, model_path):
         with open(model_path, "rb") as fp:
             model = pickle.load(fp)
-        self.layers = model['layers']
+        self.neurons = model['neurons']
