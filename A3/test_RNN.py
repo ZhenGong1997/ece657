@@ -37,6 +37,7 @@ if __name__ == "__main__":
 	# 3. Run prediction on the test data and output required plot and loss
 	y_pred = predict(model, test_X_scaler_torch)
 	loss_fn = nn.MSELoss()
+	# note nn.MSELoss can only take tensor, so I change numpy to tensor
 	loss = loss_fn(torch.from_numpy(y_pred).float(), test_y_scaler_torch)
 	print("Test loss = ", loss.item())
 	y_pred = y_scaler.inverse_transform(y_pred)
