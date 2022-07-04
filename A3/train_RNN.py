@@ -11,6 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 from pickle import dump
 
+# reference: https://github.com/paulwong16/ECE657-Tools_of_Intelligent_Sys_Design/blob/master/a3/train_RNN.py
+
 # YOUR IMPLEMENTATION
 # Thoroughly comment your code to make it easy to follow
 def generate_data():
