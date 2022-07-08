@@ -1,10 +1,11 @@
 # import required packages
 
-from pickle import load
+import pickle
 from process_data import *
 import torch
 import numpy as np
 from train_NLP import data_loader
+from train_NLP import NLP
 
 # YOUR IMPLEMENTATION
 # Thoroughly comment your code to make it easy to follow
@@ -18,14 +19,16 @@ def predict(model, batch_X, batch_y):
 		X = batch_X[i].reshape(batch_size,-1)
 		y = batch_y[i].reshape(batch_size)
 		output = model(X)   
+		# softmax output, get the output with max possibility
 		pred = output.max(1, keepdim=True)[1]       
 		correct += pred.eq(y.view_as(pred)).sum().item()
 	accuracy = correct / (batch_num*batch_size)	
 	print("Test Accuracy = ", accuracy) 
 
 if __name__ == "__main__": 
+
 	# 1. Load your saved model
-	saved_model = load(open(os.path.join(os.getcwd(),'models/group1_NLP_model.pkl'), 'rb'))
+	saved_model = pickle.load(open('./models/group1_NLP_model.pkl','rb'))
 	model = saved_model['model']
 	tfidf_vectorizer = saved_model['tf_vector']
 	# 2. Load your testing data

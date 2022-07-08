@@ -8,7 +8,7 @@ import numpy as np
 from pickle import dump
 import random
 from process_data import *
-
+# reference: https://github.com/paulwong16/ECE657-Tools_of_Intelligent_Sys_Design/tree/master/a3
 # YOUR IMPLEMENTATION
 # Thoroughly comment your code to make it easy to follow
 class NLP(nn.Module):
@@ -42,6 +42,7 @@ def train(model, batch_X, batch_y, optim, criterion=nn.CrossEntropyLoss(), epoch
         loss_sum = 0.0
         correct = 0
         model.train()
+        # training phase
         for i in range(batch_num):
             X = batch_X[i].reshape(batch_size,-1)
             y = batch_y[i].reshape(batch_size)
@@ -66,6 +67,7 @@ def data_loader(train_X, train_labels, batch_size, batch_num):
     batch_X = []
     batch_y = []
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # 1000 samples per batch, convert to tensor and store 
     for i in range(batch_num):
         start = i*batch_size
         end = (i+1)*batch_size
